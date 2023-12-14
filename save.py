@@ -19,7 +19,7 @@ def nmea_to_normal_gps_lon(nmea_coordinate):
 
 def open_port():
     try:
-        ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+        ser = serial.Serial('/dev/ttyUSB1', 9600, timeout=1)
         print(f"Serial port opened successfully with port: {ser.port}")
         return ser
     except serial.SerialException as e:
@@ -29,8 +29,8 @@ def open_port():
 def main():
     ser = open_port()
 
-    with open("GPS_refined.csv", "w", newline='') as file:
-        csv_writer = csv.writer(file)
+    with open("GPS_refined.csv", "w", newline='') as refined_file, open("GPS_raw.csv", "w") as raw_file:
+        refined_csv_writer = csv.writer(refined_file)
 
         if ser is not None:
             try:
@@ -38,8 +38,12 @@ def main():
                     data = ser.readline().decode('utf-8')
                     if data.startswith("$GNGGA,"):
                         print(f"Raw Data: {data}")
+
+                        # Save raw data to GPS_raw.csv without quotes
+                        raw_file.write(data.strip() + '\n')
+                        raw_file.flush()  # Flush the buffer to ensure data is written immediately
+
                         saved_sentence = data[:MAX_SENTENCE_LENGTH]
-                        print(f"Length of saved_sentence: {len(saved_sentence)}")
 
                         if len(saved_sentence) >= 44:
                             latitude = saved_sentence[18:29]
@@ -54,18 +58,17 @@ def main():
                             print(f"Latitude: {normal_latitude:.6f}")
                             print(f"Longitude: {normal_longitude:.6f}")
 
-                            csv_writer.writerow([normal_latitude, normal_longitude])
-                            file.flush()  # Flush the buffer to ensure data is written immediately
+                            # Save refined data to GPS_refined.csv
+                            refined_csv_writer.writerow([normal_latitude, normal_longitude])
+                            refined_file.flush()
 
                         else:
                             print("Insufficient characters in saved_sentence.")
                     else:
                         print("Buffer does not contain $GNGGA.")
 
-                    #time.sleep(1)  # Add a delay if needed to control the rate of reading
-
             except KeyboardInterrupt:
-                pass  # Handle keyboard interrupt (Ctrl+C)
+                pass
 
 if __name__ == "__main__":
     main()
