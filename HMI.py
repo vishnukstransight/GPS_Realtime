@@ -93,7 +93,7 @@ class GPSVisApp(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
-    points = (10.1741, 76.2160, 10.1651, 76.2286)
+    points = (10.05679, 76.35219, 10.05447, 76.35651)
     main_window = GPSVisApp(map_path='map.png', points=points, csv_filename='GPS_refined.csv')
     main_window.show()
     sys.exit(app.exec_())
