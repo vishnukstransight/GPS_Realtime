@@ -57,7 +57,7 @@ class GPSVisApp(QMainWindow):
         self.timer.timeout.connect(self.update_map)
         self.delay_timer = QTimer(self)
         self.delay_timer.timeout.connect(self.delayed_update)
-        self.delay_duration = 100  # Set the delay duration in milliseconds
+        self.delay_duration = 1000  # Set the delay duration in milliseconds
         self.csvfile = None  # Added to keep track of the open file
 
         self.update_map()
@@ -93,7 +93,7 @@ class GPSVisApp(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
-    points = (10.05679, 76.35219, 10.05447, 76.35651)
+    points = (10.0653, 76.3188, 10.0467, 76.3680)
     main_window = GPSVisApp(map_path='map.png', points=points, csv_filename='GPS_refined.csv')
     main_window.show()
     sys.exit(app.exec_())

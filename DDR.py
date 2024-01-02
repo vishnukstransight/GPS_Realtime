@@ -125,7 +125,7 @@ class WorkerThread(QThread):
                             try:
                                 ser.write(line.encode())
                                 self.new_line.emit(line)
-                                time.sleep(3)
+                                time.sleep(1)
                             except Exception as e:
                                 print(f"Error writing to serial port: {e}")
                                 break
